@@ -21,6 +21,15 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
 
     private TicTacToeGame mGame;
 
+    private int human = 0;
+    private int ties = 0;
+    private int android = 0;
+
+    private TextView mHumanTextView;
+    private TextView mTiesTextView;
+    private TextView mAndroidTextView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +45,9 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
         mBoardButtons[7] = (Button) findViewById(R.id.eight);
         mBoardButtons[8] = (Button) findViewById(R.id.nine);
         mInfoTextView = (TextView) findViewById(R.id.information);
+        mHumanTextView = (TextView) findViewById(R.id.human);
+        mTiesTextView = (TextView) findViewById(R.id.ties);
+        mAndroidTextView = (TextView) findViewById(R.id.android);
         mGame = new TicTacToeGame();
         startNewGame();
     }
@@ -51,6 +63,19 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
         }
         // Human goes first
         mInfoTextView.setText(R.string.first_human);
+        update();
+    }
+
+    void update(){
+        mHumanTextView.setText(String.valueOf(human));
+        mTiesTextView.setText(String.valueOf(ties));
+        mAndroidTextView.setText(String.valueOf(android));
+    }
+
+    void disable(){
+        for(Button button : mBoardButtons){
+            button.setEnabled(false);
+        }
     }
 
     @Override
@@ -87,12 +112,24 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
                 }
                 if(winner == 0)
                     mInfoTextView.setText(R.string.turn_human);
-                else if (winner == 1)
+                else if (winner == 1) {
                     mInfoTextView.setText(R.string.result_tie);
-                else if(winner == 2)
+                    ties++;
+                    update();
+                    disable();
+                }
+                else if(winner == 2) {
                     mInfoTextView.setText(R.string.result_human_wins);
-                else
+                    human++;
+                    update();
+                    disable();
+                }
+                else {
                     mInfoTextView.setText(R.string.result_computer_wins);
+                    android++;
+                    update();
+                    disable();
+                }
             }
         }
 
