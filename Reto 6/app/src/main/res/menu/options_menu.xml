@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="@string/new_game"
+        app:showAsAction="always"
+        android:id="@+id/new_game"
+        android:icon="@drawable/ic_fiber_new_white_48dp"/>
+    <item
+        android:title="@string/difficulty"
+        app:showAsAction="always"
+        android:id="@+id/ai_difficulty"
+        android:icon="@drawable/ic_stars_white_48dp"/>
+    <item
+        android:title="@string/reset"
+        app:showAsAction="always"
+        android:id="@+id/reset"
+        android:icon="@drawable/ic_autorenew_white_48dp"/>
+    <item
+        android:title="@string/about"
+        app:showAsAction="always"
+        android:id="@+id/about"
+        android:icon="@drawable/ic_help_outline_white_48dp"/>
+    <item
+        android:title="@string/quit"
+        app:showAsAction="always"
+        android:id="@+id/quit"
+        android:icon="@drawable/ic_close_white_48dp"/>
+</menu>
