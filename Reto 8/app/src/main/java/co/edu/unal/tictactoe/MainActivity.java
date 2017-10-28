@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseData.test();
+
         Button offline = (Button) findViewById(R.id.bt_offline);
         Button online = (Button) findViewById(R.id.bt_online);
 
