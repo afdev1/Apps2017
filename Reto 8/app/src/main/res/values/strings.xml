@@ -14,7 +14,7 @@
     <string name="difficulty_harder">Harder</string>
     <string name="difficulty_expert">Expert</string>
     <string name="difficulty_choose">Choose a difficulty level:</string>
-    <string name="quit_question">Do you really want to quit?</string>
+    <string name="quit_question">Do you really want to return to the main screen?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="difficulty">Difficulty</string>

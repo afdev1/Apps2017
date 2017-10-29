@@ -256,7 +256,9 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
                                 } else {
 
                                 }
+                                Intent intent = new Intent(AndroidTicTacToeActivity.this, MainActivity.class);
                                 AndroidTicTacToeActivity.this.finish();
+                                startActivity(intent);
                             }
                         })
                         .setNegativeButton(R.string.no, null);
