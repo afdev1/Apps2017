@@ -169,9 +169,10 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
             mMatch.child("enemy").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.getValue().toString().length() > 0){
+                    if(dataSnapshot.getValue().toString().length() > 0 && !dataSnapshot.getValue().toString().isEmpty() && !dataSnapshot.getValue().toString().equals("")){
                         if(owning){
                             canH = true;
+                            enemy = dataSnapshot.getValue().toString();
                         }
                     }
                     update();
@@ -233,8 +234,10 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
                         } else {
                             mInfoTextView.setText(R.string.waiting);
                         }
-                        canH = true;
-                        canC = false;
+                        if(enemy.length() > 0 && !dataSnapshot.getValue().toString().isEmpty() && !dataSnapshot.getValue().toString().equals("")) {
+                            canH = true;
+                            canC = false;
+                        }
                     } else {
                         if(owning) {
                             mInfoTextView.setText(R.string.waiting);
