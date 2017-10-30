@@ -32,6 +32,7 @@
             android:orientation="horizontal"
             android:layout_weight="1">
             <TextView
+                android:id="@+id/tv_huma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10sp"
@@ -76,6 +77,7 @@
             android:orientation="horizontal"
             android:layout_weight="1">
             <TextView
+                android:id="@+id/tv_andro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10sp"

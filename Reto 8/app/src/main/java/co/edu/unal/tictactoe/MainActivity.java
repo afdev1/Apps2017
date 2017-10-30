@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseData.newMatch(username.getText().toString());
                 Intent intent = new Intent(MainActivity.this, AndroidTicTacToeActivity.class);
                 intent.putExtra("owner", username.getText().toString());
+                intent.putExtra("enemy", "");
                 intent.putExtra("owning", true);
                 finish();
                 startActivity(intent);
@@ -131,7 +132,8 @@ public class MainActivity extends AppCompatActivity {
                 if(!username.getText().toString().isEmpty()) {
                     Intent intent = new Intent(MainActivity.this, AndroidTicTacToeActivity.class);
                     intent.putExtra("owner", ar[0]);
-                    intent.putExtra("username", username.getText().toString());
+                    intent.putExtra("enemy", username.getText().toString());
+                    intent.putExtra("owning", false);
                     finish();
                     FirebaseData.setEnemy(ar[0], username.getText().toString());
                     startActivity(intent);

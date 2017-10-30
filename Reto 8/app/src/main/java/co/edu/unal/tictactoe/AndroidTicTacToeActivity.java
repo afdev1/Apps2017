@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
     MediaPlayer mHumanMediaPlayer;
     MediaPlayer mComputerMediaPlayer;
     boolean offline = true;
-    String username, owner;
+    String enemy, owner;
 
     @Override
     protected void onResume() {
@@ -85,29 +86,33 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
     DatabaseReference mDatabase, mMatch;
     public ArrayList<String> arr;
 
-//    public void map2list(Map<String, String> map){
-//        arr.clear();
-//        for (String k : map.keySet()) {
-//            arr.put(k, map.get(k));// + ": " + value);
-//        }
-//    }
-
-    boolean owning = false, start = false;
+    boolean owning = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         setTitle("");
 
-        username = getIntent().getStringExtra("username");
+        enemy = getIntent().getStringExtra("enemy");
         owner = getIntent().getStringExtra("owner");
         owning = getIntent().getBooleanExtra("owning", false);
         if(owning){
             Toast toast = Toast.makeText(this, "Waiting for an opponent.", Toast.LENGTH_LONG);
             toast.show();
             offline = false;
+            canH = false;
+            canC = false;
         } else {
-            offline = username.length() == 0;
+            offline = enemy.length() == 0;
+            if(!offline){
+                Toast toast = Toast.makeText(this, owner + " vs. " + enemy, Toast.LENGTH_SHORT);
+                toast.show();
+                canH = true;
+                canC = false;
+            } else {
+                Toast toast = Toast.makeText(this, "Offline", Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
 
         levels = new CharSequence[]{
@@ -123,6 +128,12 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
             ties = mPrefs.getInt("mTies", 0);
             difficulty = mPrefs.getInt("difficulty", 2);
         } else {
+            TextView tv = (TextView) findViewById(R.id.tv_huma);
+            tv.setText("You:");
+
+            TextView tv2 = (TextView) findViewById(R.id.tv_andro);
+            tv2.setText("Enemy:");
+
             mDatabase = FirebaseData.board(owner);
             arr = new ArrayList<>();
 
@@ -132,7 +143,7 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     arr = (ArrayList<String>) dataSnapshot.getValue();
 
-                    mGame.setBoardState(FirebaseData.boardChar(mDatabase));
+                    mGame.setBoardState(FirebaseData.boardChar(arr));
                     mBoardView.invalidate();
                 }
 
@@ -154,6 +165,38 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
 
                 }
             });
+
+            mMatch.child("enemy").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue().toString().length() > 0){
+                        if(owning){
+                            canH = true;
+                        }
+                    }
+                    update();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+//            mMatch.child("enemy").addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    if(owning) {
+//                        TextView tv = (TextView) findViewById(R.id.tv_andro);
+//                        tv.setText(dataSnapshot.getValue().toString() + ":");
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
 
             mMatch.child("op").addValueEventListener(new ValueEventListener() {
                 @Override
@@ -190,12 +233,16 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
                         } else {
                             mInfoTextView.setText(R.string.waiting);
                         }
+                        canH = true;
+                        canC = false;
                     } else {
                         if(owning) {
                             mInfoTextView.setText(R.string.waiting);
                         } else {
                             mInfoTextView.setText(R.string.turn_human);
                         }
+                        canC = true;
+                        canH = false;
                     }
                     update();
                 }
@@ -234,9 +281,6 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             startNewGame();
         }
-
-        Toast toast = Toast.makeText(this, !offline ? username + " vs. user1" : "Offline", Toast.LENGTH_SHORT);
-        toast.show();
     }
 
     @Override
@@ -268,6 +312,7 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
             // Human goes first
             mInfoTextView.setText(R.string.first_human);
         } else {
+            FirebaseData.reset(owner);
             if(owning){
                 mInfoTextView.setText(R.string.first_human);
             } else {
@@ -421,12 +466,14 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
         Handler handlerC = new Handler();
 
         public boolean onTouch(View v, MotionEvent event) {
+
             // Determine which cell was touched
             int col = (int) event.getX() / mBoardView.getBoardCellWidth();
             int row = (int) event.getY() / mBoardView.getBoardCellHeight();
             final int pos = row * 3 + col;
 
 //            if(offline) {
+            if(owning || offline) {
                 if (mGame.checkForWinner() == 0 && canH && setMove(TicTacToeGame.HUMAN_PLAYER, pos)) {
                     Log.v("TicTacToe", "HUMAN");
                     canH = false;
@@ -437,20 +484,48 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
                     if (winner == 1) {
                         mInfoTextView.setText(R.string.result_tie);
                         ties++;
+                        mMatch.child("tp").setValue(ties);
                         update();
                     } else if (winner == 2) {
                         String defaultMessage = getResources().getString(R.string.result_human_wins);
                         mInfoTextView.setText(mPrefs.getString("victory_message", defaultMessage));
                         human++;
+                        if(!offline){
+                            mMatch.child("pp").setValue(human);
+                        }
                         update();
                     } else {
-                        if(offline) {
+                        if (offline) {
                             handlerC.postDelayed(run, 1000);
                         } else {
-
+                            mMatch.child("turn").setValue(1);
                         }
                     }
                 }
+            } else {
+                if (mGame.checkForWinner() == 0 && canC && setMove(TicTacToeGame.COMPUTER_PLAYER, pos)) {
+                    Log.v("TicTacToe", "ENEMY");
+                    canC = false;
+                    if (mSoundOn)
+                        mComputerMediaPlayer.start();
+                    canC = true;
+                    int winner = mGame.checkForWinner();
+                    if (winner == 1) {
+                        mInfoTextView.setText(R.string.result_tie);
+                        ties++;
+                        mMatch.child("tp").setValue(ties);
+                        update();
+                    } else if (winner == 2) {
+                        String defaultMessage = getResources().getString(R.string.result_human_wins);
+                        mInfoTextView.setText(mPrefs.getString("victory_message", defaultMessage));
+                        android++;
+                        mMatch.child("ep").setValue(android);
+                        update();
+                    } else {
+                        mMatch.child("turn").setValue(0);
+                    }
+                }
+            }
 //            } else {
 //                if(owning) {
 //                    setMove(TicTacToeGame.HUMAN_PLAYER, pos);
@@ -465,6 +540,9 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
         private boolean setMove(char player, int location) {
             if (mGame.setMove(player, location)) {
                 mBoardView.invalidate();   // Redraw the board
+                if(!offline){
+                    FirebaseData.update(owner, mGame.getBoardState());
+                }
                 return true;
             }
             return false;

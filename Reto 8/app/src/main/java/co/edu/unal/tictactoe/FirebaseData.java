@@ -38,6 +38,7 @@ public class FirebaseData {
     }
 
     public static void update(String host, char[] mBoard){
+        Log.v("UPD " , Arrays.toString(mBoard));
         DatabaseReference match = mDatabase.child("matches").child(host).child("state").child("state");
         String[] initial = new String[9];
         for(int i = 0; i < 9; i++){
@@ -55,12 +56,20 @@ public class FirebaseData {
         return mDatabase.child("matches").child(owner).child("state").child("state");
     }
 
-    public static char[] boardChar (DatabaseReference arr){
+    public static char[] boardChar (ArrayList<String> arr){
+        Log.v("CHAR", arr.toString());
         String aux = arr.toString().replaceAll(",", "");
         return aux.substring(1, aux.length()-1).replaceAll(" ", "").toCharArray();
     }
 
     public static DatabaseReference match(String owner){
         return mDatabase.child("matches").child(owner).child("state");
+    }
+
+    public static void reset(String owner){
+        String open = String.valueOf(TicTacToeGame.OPEN_SPOT);
+        String[] initial = new String[]{open, open, open, open, open, open, open, open, open};
+        List nameList = new ArrayList<>(Arrays.asList(initial));
+        mDatabase.child("matches").child(owner).child("state").child("state").setValue(nameList);
     }
 }
