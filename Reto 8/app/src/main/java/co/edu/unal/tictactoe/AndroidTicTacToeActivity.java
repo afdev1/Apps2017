@@ -23,6 +23,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.harding.tictactoe.TicTacToeGame;
 
 public class AndroidTicTacToeActivity extends AppCompatActivity {
@@ -41,7 +50,7 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
     MediaPlayer mHumanMediaPlayer;
     MediaPlayer mComputerMediaPlayer;
     boolean offline = true;
-    String username;
+    String username, owner;
 
     @Override
     protected void onResume() {
@@ -73,6 +82,17 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
         }
     }
 
+    DatabaseReference mDatabase, mMatch;
+    public ArrayList<String> arr;
+
+//    public void map2list(Map<String, String> map){
+//        arr.clear();
+//        for (String k : map.keySet()) {
+//            arr.put(k, map.get(k));// + ": " + value);
+//        }
+//    }
+
+    boolean owning = false, start = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +100,15 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
         setTitle("");
 
         username = getIntent().getStringExtra("username");
-        offline = username.length() == 0;
+        owner = getIntent().getStringExtra("owner");
+        owning = getIntent().getBooleanExtra("owning", false);
+        if(owning){
+            Toast toast = Toast.makeText(this, "Waiting for an opponent.", Toast.LENGTH_LONG);
+            toast.show();
+            offline = false;
+        } else {
+            offline = username.length() == 0;
+        }
 
         levels = new CharSequence[]{
                 getResources().getString(R.string.difficulty_easy),
@@ -95,7 +123,88 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
             ties = mPrefs.getInt("mTies", 0);
             difficulty = mPrefs.getInt("difficulty", 2);
         } else {
+            mDatabase = FirebaseData.board(owner);
+            arr = new ArrayList<>();
 
+            mMatch = FirebaseData.match(owner);
+            mDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    arr = (ArrayList<String>) dataSnapshot.getValue();
+
+                    mGame.setBoardState(FirebaseData.boardChar(mDatabase));
+                    mBoardView.invalidate();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    System.out.println(databaseError.toException());
+                }
+            });
+
+            mMatch.child("ep").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    android = ((Long) dataSnapshot.getValue()).intValue();
+                    update();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            mMatch.child("op").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    human = ((Long) dataSnapshot.getValue()).intValue();
+                    update();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            mMatch.child("tp").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ties = ((Long) dataSnapshot.getValue()).intValue();
+                    update();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            mMatch.child("turn").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(((Long) dataSnapshot.getValue()).intValue() == 0){
+                        if(owning) {
+                            mInfoTextView.setText(R.string.turn_human);
+                        } else {
+                            mInfoTextView.setText(R.string.waiting);
+                        }
+                    } else {
+                        if(owning) {
+                            mInfoTextView.setText(R.string.waiting);
+                        } else {
+                            mInfoTextView.setText(R.string.turn_human);
+                        }
+                    }
+                    update();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
         mGame = new TicTacToeGame();
@@ -159,7 +268,11 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
             // Human goes first
             mInfoTextView.setText(R.string.first_human);
         } else {
-
+            if(owning){
+                mInfoTextView.setText(R.string.first_human);
+            } else {
+                mInfoTextView.setText(R.string.waiting);
+            }
         }
         update();
     }
@@ -270,6 +383,7 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
 
     // Listen for touches on the board
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+
         Runnable run = new Runnable() {
             @Override
             public void run() {
@@ -311,26 +425,39 @@ public class AndroidTicTacToeActivity extends AppCompatActivity {
             int col = (int) event.getX() / mBoardView.getBoardCellWidth();
             int row = (int) event.getY() / mBoardView.getBoardCellHeight();
             final int pos = row * 3 + col;
-            if (mGame.checkForWinner() == 0 && canH && setMove(TicTacToeGame.HUMAN_PLAYER, pos)) {
-                Log.v("TicTacToe", "HUMAN");
-                canH = false;
-                if (mSoundOn)
-                    mHumanMediaPlayer.start();
-                canC = true;
-                int winner = mGame.checkForWinner();
-                if (winner == 1) {
-                    mInfoTextView.setText(R.string.result_tie);
-                    ties++;
-                    update();
-                } else if (winner == 2) {
-                    String defaultMessage = getResources().getString(R.string.result_human_wins);
-                    mInfoTextView.setText(mPrefs.getString("victory_message", defaultMessage));
-                    human++;
-                    update();
-                } else {
-                    handlerC.postDelayed(run, 1000);
+
+//            if(offline) {
+                if (mGame.checkForWinner() == 0 && canH && setMove(TicTacToeGame.HUMAN_PLAYER, pos)) {
+                    Log.v("TicTacToe", "HUMAN");
+                    canH = false;
+                    if (mSoundOn)
+                        mHumanMediaPlayer.start();
+                    canC = true;
+                    int winner = mGame.checkForWinner();
+                    if (winner == 1) {
+                        mInfoTextView.setText(R.string.result_tie);
+                        ties++;
+                        update();
+                    } else if (winner == 2) {
+                        String defaultMessage = getResources().getString(R.string.result_human_wins);
+                        mInfoTextView.setText(mPrefs.getString("victory_message", defaultMessage));
+                        human++;
+                        update();
+                    } else {
+                        if(offline) {
+                            handlerC.postDelayed(run, 1000);
+                        } else {
+
+                        }
+                    }
                 }
-            }
+//            } else {
+//                if(owning) {
+//                    setMove(TicTacToeGame.HUMAN_PLAYER, pos);
+//                } else {
+//                    setMove(TicTacToeGame.COMPUTER_PLAYER, pos);
+//                }
+//            }
             // So we aren't notified of continued events when finger is moved
             return false;
         }

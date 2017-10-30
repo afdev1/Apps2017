@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 //        final Button join = (Button) findViewById(R.id.bt_join);
         final TextView matches = (TextView) findViewById(R.id.tv_matches);
 //        final LinearLayout fake = (LinearLayout) findViewById(R.id.fake);
-        final ListView list = (ListView) findViewById(R.id.lv_matches);
+        final ListView listView = (ListView) findViewById(R.id.lv_matches);
 
         offline.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 matches.setVisibility(View.VISIBLE);
-                list.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.VISIBLE);
                 username.setVisibility(View.VISIBLE);
                 create.setVisibility(View.VISIBLE);
 //                fake.setVisibility(View.VISIBLE);
@@ -80,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FirebaseData.newMatch(username.getText().toString());
+                Intent intent = new Intent(MainActivity.this, AndroidTicTacToeActivity.class);
+                intent.putExtra("owner", username.getText().toString());
+                intent.putExtra("owning", true);
+                finish();
+                startActivity(intent);
             }
         });
 
@@ -92,9 +98,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                map2list((Map) dataSnapshot.getValue());
-                //formats the datasnapshot entries to strings
-                adapter.notifyDataSetChanged();
+                try {
+                    map2list((Map) dataSnapshot.getValue());
+                    //formats the datasnapshot entries to strings
+                    adapter.notifyDataSetChanged();
+                } catch (Exception e){
+
+                }
             }
 
             @Override
@@ -107,13 +117,15 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, arr);
 
-        ListView listView = (ListView) findViewById(R.id.lv_matches);
+//        ListView listView = (ListView) findViewById(R.id.lv_matches);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String[] ar = ((TextView) view).getText().toString().split(" ");
                 if(ar.length > 1){
+                    Toast toast = Toast.makeText(MainActivity.this, "Already matched! Please choose another or create a new one.", Toast.LENGTH_SHORT);
+                    toast.show();
                     return;
                 }
                 if(!username.getText().toString().isEmpty()) {
@@ -123,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                     FirebaseData.setEnemy(ar[0], username.getText().toString());
                     startActivity(intent);
+                } else {
+                    Toast toast = Toast.makeText(MainActivity.this, "Please, write your username.", Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });

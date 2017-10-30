@@ -2,6 +2,7 @@
     <string name="app_name">Tic-Tac-Toe</string>
     <string name="new_game">New Game</string>
     <string name="first_human">You go first.</string>
+    <string name="waiting">Waiting for the opponent.</string>
     <string name="turn_human">Your turn.</string>
     <string name="turn_computer">Android\'s turn.</string>
     <string name="result_tie">It\'s a tie.</string>
