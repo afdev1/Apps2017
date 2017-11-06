@@ -15,6 +15,8 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:background="#607D8B"
+        android:textColor="#FFFFFF"
         android:text="Offline" />
 
     <View
@@ -29,6 +31,8 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:background="#4CAF50"
+        android:textColor="#FFFFFF"
         android:text="Online" />
 
     <EditText
@@ -45,6 +49,8 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:background="#2196F3"
+        android:textColor="#FFFFFF"
         android:text="Create match"
         android:visibility="gone"/>
 
@@ -55,30 +61,11 @@
         android:text="Matches"
         android:visibility="gone"/>
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/fake"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:visibility="gone">-->
-        <!--<TextView-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="0.5"-->
-            <!--android:text="user1"-->
-            <!--android:layout_gravity="center_vertical"/>-->
-        <!--<Button-->
-            <!--android:id="@+id/bt_join"-->
-            <!--android:layout_width="200dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:text="Play" />-->
-    <!--</LinearLayout>-->
-
     <ListView
         android:id="@+id/lv_matches"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:visibility="gone"/>
 
 </LinearLayout>

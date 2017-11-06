@@ -3,6 +3,7 @@ package co.edu.unal.tictactoe;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,9 +34,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseData.test();
-
-
         Button offline = (Button) findViewById(R.id.bt_offline);
         Button online = (Button) findViewById(R.id.bt_online);
 
@@ -51,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AndroidTicTacToeActivity.class);
                 intent.putExtra("username", "");
+                intent.putExtra("enemy", "");
                 finish();
                 startActivity(intent);
             }
@@ -134,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("owner", ar[0]);
                     intent.putExtra("enemy", username.getText().toString());
                     intent.putExtra("owning", false);
-                    finish();
                     FirebaseData.setEnemy(ar[0], username.getText().toString());
+                    finish();
                     startActivity(intent);
                 } else {
                     Toast toast = Toast.makeText(MainActivity.this, "Please, write your username.", Toast.LENGTH_SHORT);
@@ -156,7 +155,9 @@ public class MainActivity extends AppCompatActivity {
             String key = entry.getKey();
             HashMap<String, HashMap<String, Object>> value = entry.getValue();
             String enemy = value.get("state").get("enemy").toString();
-            arr.add(key + (!enemy.equals("\u0000")?" vs. " + enemy:""));// + ": " + value);
+            Log.v("LLaves ", value.get("state").keySet().toString());
+            Log.v("LLaves ", value.get("state").values().toString());
+            arr.add(key + (!enemy.equals("\u0000")? "(" + String.valueOf(((Long)value.get("state").get("op")).intValue()) + ")" + " vs. " + enemy + "(" + String.valueOf(((Long)value.get("state").get("ep"))) + ")":""));// + ": " + value);
         }
 
     }

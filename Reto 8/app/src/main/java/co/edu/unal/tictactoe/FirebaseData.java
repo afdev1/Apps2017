@@ -15,10 +15,6 @@ import edu.harding.tictactoe.TicTacToeGame;
 public class FirebaseData {
     public static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-    public static void test() {
-        Log.v("FIREBASE", mDatabase.child("matches").child("user1").toString());
-    }
-
     public static void newMatch(String host) {
         DatabaseReference match = mDatabase.child("matches").child(host).child("state");
         match.child("enemy").setValue("\u0000");
@@ -49,6 +45,7 @@ public class FirebaseData {
     }
 
     public static void setEnemy(String host, String enemy){
+        Log.v(":O", enemy);
         mDatabase.child("matches").child(host).child("state").child("enemy").setValue(enemy);
     }
 
