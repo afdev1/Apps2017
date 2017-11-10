@@ -8,6 +8,10 @@
     tools:context="afdev.unal.edu.co.directory.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></SearchView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
