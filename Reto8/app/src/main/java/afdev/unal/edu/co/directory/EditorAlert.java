@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -29,8 +30,7 @@ public class EditorAlert extends DialogFragment {
     private long comId;
     private CompanyOperations companyData;
 
-    String mode = "Add";
-
+    String mode;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -38,8 +38,28 @@ public class EditorAlert extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View view = inflater.inflate(R.layout.editor, null);
+
+        companyData = new CompanyOperations(view.getContext());
+        companyData.open();
+        newCompany = new Company();
+        oldCompany = new Company();
+        name = view.findViewById(R.id.ti_name);
+        url = view.findViewById(R.id.ti_url);
+        telephone = view.findViewById(R.id.ti_telephone);
+        email = view.findViewById(R.id.ti_email);
+        services = view.findViewById(R.id.ti_services);
+        type = view.findViewById(R.id.sp_type);
+
+        mode = getArguments().getString("mode");
+
+        if (mode.equals("Update")) {
+            comId = getArguments().getLong("id");
+            initializeCompany(comId);
+        }
+
+
         builder.setView(view)
-                .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
+                .setPositiveButton(mode.equals("Update") ? "Actualizar":"Crear", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         if (mode.equals("Add")) {
@@ -75,24 +95,15 @@ public class EditorAlert extends DialogFragment {
                     }
                 });
 
-        newCompany = new Company();
-        oldCompany = new Company();
-        name = view.findViewById(R.id.ti_name);
-        url = view.findViewById(R.id.ti_url);
-        telephone = view.findViewById(R.id.ti_telephone);
-        email = view.findViewById(R.id.ti_email);
-        services = view.findViewById(R.id.ti_services);
-        type = view.findViewById(R.id.sp_type);
-        companyData = new CompanyOperations(getActivity());
-        companyData.open();
         return builder.create();
     }
 
     private void initializeCompany(long comId) {
         oldCompany = companyData.getCompany(comId);
+        Log.v("PRUEBAA", oldCompany.toString());
         name.setText(oldCompany.getName());
         url.setText(oldCompany.getUrl());
-        telephone.setText(oldCompany.getTelephone());
+        telephone.setText(oldCompany.getTelephone().toString());
         email.setText(oldCompany.getEmail());
         services.setText(oldCompany.getServices());
         type.setSelection(Arrays.asList(getResources().getStringArray(R.array.types)).indexOf(oldCompany.getType()));

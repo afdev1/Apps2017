@@ -61,15 +61,12 @@ public class CompanyOperations {
         Cursor cursor = database.query(CompanyDBHandler.TABLE_COMPANIES, allColumns, CompanyDBHandler.COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-
         Company e = new Company(Long.parseLong(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getString(4), cursor.getString(5), cursor.getString(6));
-        // return Company
         return e;
     }
 
     public List<Company> getAllCompanies() {
         Cursor cursor = database.query(CompanyDBHandler.TABLE_COMPANIES, allColumns, null, null, null, null, null);
-
         List<Company> employees = new ArrayList<>();
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
@@ -84,10 +81,8 @@ public class CompanyOperations {
                 employees.add(company);
             }
         }
-        // return All Companys
         return employees;
     }
-
 
     // Updating Company
     public int updateCompany(Company company) {
@@ -98,10 +93,7 @@ public class CompanyOperations {
         values.put(CompanyDBHandler.COLUMN_EMAIL, company.getEmail());
         values.put(CompanyDBHandler.COLUMN_SERVICES, company.getServices());
         values.put(CompanyDBHandler.COLUMN_TYPE, company.getType());
-
-        // updating row
-        return database.update(CompanyDBHandler.TABLE_COMPANIES, values,
-                CompanyDBHandler.COLUMN_ID + "=?", new String[]{String.valueOf(company.getComId())});
+        return database.update(CompanyDBHandler.TABLE_COMPANIES, values,CompanyDBHandler.COLUMN_ID + "=?", new String[]{String.valueOf(company.getComId())});
     }
 
     // Deleting Company

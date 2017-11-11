@@ -29,9 +29,8 @@ public class CompanyDBHandler extends SQLiteOpenHelper {
                     COLUMN_TYPE + " TEXT " +
                     ")";
 
-
     public CompanyDBHandler(Context context){
-        super(context,DATABASE_NAME,null,DATABASE_VERSION);
+        super(context,DATABASE_NAME,null, DATABASE_VERSION);
     }
 
     @Override
