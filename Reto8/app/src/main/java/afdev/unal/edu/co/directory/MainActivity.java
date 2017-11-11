@@ -1,5 +1,6 @@
 package afdev.unal.edu.co.directory;
 
+import android.app.DialogFragment;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -41,9 +42,10 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                showPopup(view);
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                DialogFragment newFragment = new EditorAlert();
+                newFragment.show(getFragmentManager(), "editor");
             }
         });
 
@@ -73,36 +75,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void showPopup(View anchorView) {
-
-        View popupView = getLayoutInflater().inflate(R.layout.fragment_blank, null);
-
-        PopupWindow popupWindow = new PopupWindow(popupView,
-                Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
-
-        // Example: If you have a TextView inside `popup_layout.xml`
-        TextView tv = (TextView) popupView.findViewById(R.id.tv_test);
-
-        tv.setText("Add company");
-
-        // Initialize more widgets from `popup_layout.xml`
-
-        // If the PopupWindow should be focusable
-        popupWindow.setFocusable(true);
-
-        // If you need the PopupWindow to dismiss when when touched outside
-        popupWindow.setBackgroundDrawable(new ColorDrawable());
-
-        int location[] = new int[2];
-
-        // Get the View's(the one that was clicked in the Fragment) location
-        anchorView.getLocationOnScreen(location);
-
-        // Using location, the PopupWindow will be displayed right under anchorView
-        popupWindow.showAtLocation(anchorView, Gravity.CENTER,
-                0,0);
-
     }
 }
