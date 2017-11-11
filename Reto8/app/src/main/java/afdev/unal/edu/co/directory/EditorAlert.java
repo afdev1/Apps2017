@@ -72,8 +72,6 @@ public class EditorAlert extends DialogFragment {
                             companyData.addCompany(newCompany);
                             Toast t = Toast.makeText(getActivity(), "Company " + newCompany.getName() + "has been added successfully !", Toast.LENGTH_SHORT);
                             t.show();
-                            Intent i = new Intent(getActivity(), MainActivity.class);
-                            startActivity(i);
                         } else {
                             oldCompany.setName(name.getText().toString());
                             oldCompany.setUrl(url.getText().toString());
@@ -84,8 +82,6 @@ public class EditorAlert extends DialogFragment {
                             companyData.updateCompany(oldCompany);
                             Toast t = Toast.makeText(getActivity(), "Company " + oldCompany.getName() + " has been updated successfully !", Toast.LENGTH_SHORT);
                             t.show();
-                            Intent i = new Intent(getActivity(), MainActivity.class);
-                            startActivity(i);
                         }
                     }
                 })

@@ -64,14 +64,7 @@ public class Company {
 
     @Override
     public String toString() {
-        return "Company{" +
-                "comId=" + comId +
-                ", name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                ", telephone=" + telephone +
-                ", email='" + email + '\'' +
-                ", type=" + type +
-                '}';
+        return name + " - " + type;
     }
 
     public Long getComId() {
