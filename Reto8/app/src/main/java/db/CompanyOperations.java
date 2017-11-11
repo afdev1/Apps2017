@@ -25,6 +25,7 @@ public class CompanyOperations {
             CompanyDBHandler.COLUMN_URL,
             CompanyDBHandler.COLUMN_TELEPHONE,
             CompanyDBHandler.COLUMN_EMAIL,
+            CompanyDBHandler.COLUMN_SERVICES,
             CompanyDBHandler.COLUMN_TYPE
     };
 
@@ -48,6 +49,7 @@ public class CompanyOperations {
         values.put(CompanyDBHandler.COLUMN_URL, Company.getUrl());
         values.put(CompanyDBHandler.COLUMN_TELEPHONE, Company.getTelephone());
         values.put(CompanyDBHandler.COLUMN_EMAIL, Company.getEmail());
+        values.put(CompanyDBHandler.COLUMN_SERVICES, Company.getServices());
         values.put(CompanyDBHandler.COLUMN_TYPE, Company.getType());
         long insertid = database.insert(CompanyDBHandler.TABLE_COMPANIES, null, values);
         Company.setComId(insertid);
@@ -60,7 +62,7 @@ public class CompanyOperations {
         if (cursor != null)
             cursor.moveToFirst();
 
-        Company e = new Company(Long.parseLong(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getString(4), cursor.getInt(5));
+        Company e = new Company(Long.parseLong(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getString(4), cursor.getString(5), cursor.getString(6));
         // return Company
         return e;
     }
@@ -77,7 +79,8 @@ public class CompanyOperations {
                 company.setUrl(cursor.getString(cursor.getColumnIndex(CompanyDBHandler.COLUMN_URL)));
                 company.setTelephone(cursor.getInt(cursor.getColumnIndex(CompanyDBHandler.COLUMN_TELEPHONE)));
                 company.setEmail(cursor.getString(cursor.getColumnIndex(CompanyDBHandler.COLUMN_EMAIL)));
-                company.setType(cursor.getInt(cursor.getColumnIndex(CompanyDBHandler.COLUMN_TYPE)));
+                company.setServices(cursor.getString(cursor.getColumnIndex(CompanyDBHandler.COLUMN_SERVICES)));
+                company.setType(cursor.getString(cursor.getColumnIndex(CompanyDBHandler.COLUMN_TYPE)));
                 employees.add(company);
             }
         }
@@ -93,6 +96,7 @@ public class CompanyOperations {
         values.put(CompanyDBHandler.COLUMN_URL, company.getUrl());
         values.put(CompanyDBHandler.COLUMN_TELEPHONE, company.getTelephone());
         values.put(CompanyDBHandler.COLUMN_EMAIL, company.getEmail());
+        values.put(CompanyDBHandler.COLUMN_SERVICES, company.getServices());
         values.put(CompanyDBHandler.COLUMN_TYPE, company.getType());
 
         // updating row

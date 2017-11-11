@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="types">
-        <item>Consultoría</item>
-        <item>Desarrollo de Software a la medida</item>
-        <item>Fábrica de Software</item>
-    </array>
+    <string-array name="types">
+        <item>@string/consultoria</item>
+        <item>@string/medida</item>
+        <item>@string/fabrica</item>
+    </string-array>
 </resources>

@@ -1,30 +1,24 @@
 package model;
 
-import java.util.HashMap;
-
 public class Company {
     private Long comId;
     private String name;
     private String url;
     private Integer telephone;
     private String email;
-    private Integer type;
-
-    public static HashMap<Integer, String> types = new HashMap<Integer, String>(){{
-        put(1, "Consultoría");
-        put(2, "Desarrollo a la medida");
-        put(3, "Fábrica de software");
-    }};
+    private String services;
+    private String type;
 
     public Company(){
     }
 
-    public Company(Long comId, String name, String url, Integer telephone, String email, Integer type) {
+    public Company(Long comId, String name, String url, Integer telephone, String email, String services, String type) {
         this.comId = comId;
         this.name = name;
         this.url = url;
         this.telephone = telephone;
         this.email = email;
+        this.services = services;
         this.type = type;
     }
 
@@ -60,11 +54,11 @@ public class Company {
         this.email = email;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -86,5 +80,13 @@ public class Company {
 
     public void setComId(Long comId) {
         this.comId = comId;
+    }
+
+    public String getServices() {
+        return services;
+    }
+
+    public void setServices(String services) {
+        this.services = services;
     }
 }
