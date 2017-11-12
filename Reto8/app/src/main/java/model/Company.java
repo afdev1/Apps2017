@@ -4,7 +4,7 @@ public class Company {
     private Long comId;
     private String name;
     private String url;
-    private Integer telephone;
+    private Long telephone;
     private String email;
     private String services;
     private String type;
@@ -12,7 +12,7 @@ public class Company {
     public Company(){
     }
 
-    public Company(Long comId, String name, String url, Integer telephone, String email, String services, String type) {
+    public Company(Long comId, String name, String url, Long telephone, String email, String services, String type) {
         this.comId = comId;
         this.name = name;
         this.url = url;
@@ -38,11 +38,11 @@ public class Company {
         this.url = url;
     }
 
-    public Integer getTelephone() {
+    public Long getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(Integer telephone) {
+    public void setTelephone(Long telephone) {
         this.telephone = telephone;
     }
 

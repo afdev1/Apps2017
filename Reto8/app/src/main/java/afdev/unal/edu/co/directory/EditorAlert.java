@@ -65,23 +65,19 @@ public class EditorAlert extends DialogFragment {
                         if (mode.equals("Add")) {
                             newCompany.setName(name.getText().toString());
                             newCompany.setUrl(url.getText().toString());
-                            newCompany.setTelephone(Integer.parseInt(telephone.getText().toString()));
+                            newCompany.setTelephone(Long.parseLong(telephone.getText().toString()));
                             newCompany.setEmail(email.getText().toString());
                             newCompany.setServices(services.getText().toString());
                             newCompany.setType(type.getSelectedItem().toString());
                             companyData.addCompany(newCompany);
-                            Toast t = Toast.makeText(getActivity(), "Company " + newCompany.getName() + "has been added successfully !", Toast.LENGTH_SHORT);
-                            t.show();
                         } else {
                             oldCompany.setName(name.getText().toString());
                             oldCompany.setUrl(url.getText().toString());
-                            oldCompany.setTelephone(Integer.parseInt(telephone.getText().toString()));
+                            oldCompany.setTelephone(Long.parseLong(telephone.getText().toString()));
                             oldCompany.setEmail(email.getText().toString());
                             oldCompany.setServices(services.getText().toString());
                             oldCompany.setType(type.getSelectedItem().toString());
                             companyData.updateCompany(oldCompany);
-                            Toast t = Toast.makeText(getActivity(), "Company " + oldCompany.getName() + " has been updated successfully !", Toast.LENGTH_SHORT);
-                            t.show();
                         }
                         ((MainActivity) getActivity()).refresh();
                     }
