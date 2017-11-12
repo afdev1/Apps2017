@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Reto8.iml" filepath="$PROJECT_DIR$/Reto8.iml" />
+      <module fileurl="file://C:\Users\Usuario\Documents\Apps2017\Reto8\Reto8.iml" filepath="C:\Users\Usuario\Documents\Apps2017\Reto8\Reto8.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Usuario\Documents\Apps2017\Reto8\app\app.iml" filepath="C:\Users\Usuario\Documents\Apps2017\Reto8\app\app.iml" />
     </modules>
   </component>
 </project>

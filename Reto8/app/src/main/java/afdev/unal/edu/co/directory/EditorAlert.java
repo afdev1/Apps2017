@@ -83,6 +83,7 @@ public class EditorAlert extends DialogFragment {
                             Toast t = Toast.makeText(getActivity(), "Company " + oldCompany.getName() + " has been updated successfully !", Toast.LENGTH_SHORT);
                             t.show();
                         }
+                        ((MainActivity) getActivity()).refresh();
                     }
                 })
                 .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

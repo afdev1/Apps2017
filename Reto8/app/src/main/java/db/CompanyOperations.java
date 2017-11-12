@@ -66,7 +66,26 @@ public class CompanyOperations {
     }
 
     public List<Company> getAllCompanies() {
-        Cursor cursor = database.query(CompanyDBHandler.TABLE_COMPANIES, allColumns, null, null, null, null, null);
+        Cursor cursor = database.query(CompanyDBHandler.TABLE_COMPANIES, allColumns, null, null, null, null, CompanyDBHandler.COLUMN_NAME);
+        List<Company> employees = new ArrayList<>();
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                Company company = new Company();
+                company.setComId(cursor.getLong(cursor.getColumnIndex(CompanyDBHandler.COLUMN_ID)));
+                company.setName(cursor.getString(cursor.getColumnIndex(CompanyDBHandler.COLUMN_NAME)));
+                company.setUrl(cursor.getString(cursor.getColumnIndex(CompanyDBHandler.COLUMN_URL)));
+                company.setTelephone(cursor.getInt(cursor.getColumnIndex(CompanyDBHandler.COLUMN_TELEPHONE)));
+                company.setEmail(cursor.getString(cursor.getColumnIndex(CompanyDBHandler.COLUMN_EMAIL)));
+                company.setServices(cursor.getString(cursor.getColumnIndex(CompanyDBHandler.COLUMN_SERVICES)));
+                company.setType(cursor.getString(cursor.getColumnIndex(CompanyDBHandler.COLUMN_TYPE)));
+                employees.add(company);
+            }
+        }
+        return employees;
+    }
+
+    public List<Company> getAllCompanies(String s) {
+        Cursor cursor = database.query(CompanyDBHandler.TABLE_COMPANIES, allColumns, CompanyDBHandler.COLUMN_NAME + " like '%" + s + "%' or " + CompanyDBHandler.COLUMN_TYPE + " like '%" + s + "%'", null, null, null, CompanyDBHandler.COLUMN_NAME);
         List<Company> employees = new ArrayList<>();
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {

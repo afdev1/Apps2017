@@ -2,11 +2,14 @@ package afdev.unal.edu.co.directory;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,10 +17,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import db.CompanyOperations;
 import model.Company;
@@ -28,10 +33,34 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayAdapter<Company> adapter;
 
+    SearchView search;
+
+    public void refresh(){
+        adapter.clear();
+        adapter.addAll(companyOps.getAllCompanies());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        search = findViewById(R.id.sv_search);
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.clear();
+                List<Company> list = companyOps.getAllCompanies(s);
+                adapter.addAll(list);
+                return false;
+            }
+        });
 
         companyOps = new CompanyOperations(this);
         companyOps.open();
@@ -43,9 +72,11 @@ public class MainActivity extends AppCompatActivity {
                 Bundle args = new Bundle();
                 args.putString("mode", "Add");
 
+                FragmentManager fm = getFragmentManager();
+
                 DialogFragment newFragment = new EditorAlert();
                 newFragment.setArguments(args);
-                newFragment.show(getFragmentManager(), "editor");
+                newFragment.show(fm, "editor");
             }
         });
 
